@@ -7,6 +7,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class ProductsTest extends BaseTest {
     private ProductsPage productsPage;
 
@@ -33,12 +37,45 @@ public class ProductsTest extends BaseTest {
     }
 
     @Test
-    public void testNavigateToCart() {
+    public void testAddMultipleProductsToCart() {
         productsPage.addBackpackToCart();
-        productsPage.goToCart();
+        productsPage.addBikeLightToCart();
+        Assertions.assertEquals("2", productsPage.getCartCount());
+    }
 
-        CartPage cartPage = new CartPage(driver);
-        Assertions.assertEquals("Your Cart", cartPage.getTitle());
-        Assertions.assertEquals("Sauce Labs Backpack", cartPage.getItemName());
+    @Test
+    public void testSortNameAtoZ() {
+        productsPage.selectSortOption("az");
+        List<String> names = productsPage.getAllItemNames();
+        List<String> sortedNames = new ArrayList<>(names);
+        Collections.sort(sortedNames);
+        Assertions.assertEquals(sortedNames, names);
+    }
+
+    @Test
+    public void testSortNameZtoA() {
+        productsPage.selectSortOption("za");
+        List<String> names = productsPage.getAllItemNames();
+        List<String> sortedNames = new ArrayList<>(names);
+        sortedNames.sort(Collections.reverseOrder());
+        Assertions.assertEquals(sortedNames, names);
+    }
+
+    @Test
+    public void testSortPriceLowToHigh() {
+        productsPage.selectSortOption("lohi");
+        List<Double> prices = productsPage.getAllItemPrices();
+        List<Double> sortedPrices = new ArrayList<>(prices);
+        Collections.sort(sortedPrices);
+        Assertions.assertEquals(sortedPrices, prices);
+    }
+
+    @Test
+    public void testSortPriceHighToLow() {
+        productsPage.selectSortOption("hilo");
+        List<Double> prices = productsPage.getAllItemPrices();
+        List<Double> sortedPrices = new ArrayList<>(prices);
+        sortedPrices.sort(Collections.reverseOrder());
+        Assertions.assertEquals(sortedPrices, prices);
     }
 }
